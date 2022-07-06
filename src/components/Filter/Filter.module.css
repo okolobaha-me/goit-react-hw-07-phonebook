@@ -1,0 +1,13 @@
+.filterLabel {
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.filter {
+  margin-left: 30px;
+  margin-bottom: 30px;
+}
+.filterTitle {
+  margin-bottom: 10px;
+}

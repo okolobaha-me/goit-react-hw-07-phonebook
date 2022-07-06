@@ -1,0 +1,24 @@
+.item {
+  display: flex;
+  justify-content: space-between;
+  max-width: 400px;
+  align-items: baseline;
+  padding: 4px;
+}
+
+.button {
+  border: none;
+  background-color: rgb(208, 223, 248);
+  padding: 6px 15px 6px 15px;
+  border-radius: 4px;
+  box-shadow: -5px -5px 11px -5px rgb(37, 87, 147) inset;
+  cursor: pointer;
+}
+
+.item:nth-child(2n) {
+  background-color: rgb(207, 224, 238);
+}
+
+.item:nth-child(2n-1) {
+  background-color: rgb(184, 206, 229);
+}

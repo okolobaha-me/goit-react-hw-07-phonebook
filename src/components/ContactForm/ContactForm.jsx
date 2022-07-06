@@ -1,13 +1,17 @@
 import { Field, Form, Formik } from 'formik';
 import s from './ContactForm.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContact, getContacts } from '../../redux/contactsSlice';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import shortID from 'shortid';
+import {
+  useAddContactMutation,
+  useGetContactsQuery,
+} from '../../redux/contactsSlice';
+import { useDispatch } from 'react-redux';
+import { setFilter } from '../../redux/filterSlice';
 
 export const ContactForm = () => {
+  const { data: contacts } = useGetContactsQuery();
+  const [addContact, { isLoading }] = useAddContactMutation();
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
 
   const isEmptyString = str => {
     return str.length === 0;
@@ -30,8 +34,8 @@ export const ContactForm = () => {
       );
       return;
     }
-
-    dispatch(addContact({ name, phone, id: shortID.generate() }));
+    addContact({ name, phone });
+    dispatch(setFilter(''));
     actions.resetForm();
   };
 
@@ -60,7 +64,7 @@ export const ContactForm = () => {
           />
         </label>
 
-        <button className={s.formButton} type="submit">
+        <button className={s.formButton} type="submit" disabled={isLoading}>
           Add contact
         </button>
       </Form>

@@ -1,43 +1,36 @@
-import { createSlice } from '@reduxjs/toolkit';
-import persistReducer from 'redux-persist/es/persistReducer';
-import storage from 'redux-persist/lib/storage';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const contactsSlice = createSlice({
-  name: 'contacts',
-  initialState: { items: [], filter: '' },
-  reducers: {
-    addContact(state, action) {
-      state.items.push(action.payload);
-    },
-    deleteContact(state, action) {
-      state.items = state.items.filter(item => item.id !== action.payload);
-    },
-    setFilter(state, action) {
-      state.filter = action.payload;
-    },
-  },
+export const contactsSlice = createApi({
+  reducerPath: 'contacts',
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'https://62be8a7c0bc9b125615983e9.mockapi.io/',
+  }),
+  tagTypes: ['Contacts'],
+  endpoints: builder => ({
+    getContacts: builder.query({
+      query: () => '/contacts',
+      providesTags: ['Contacts'],
+    }),
+    addContact: builder.mutation({
+      query: contact => ({
+        url: '/contacts',
+        method: 'POST',
+        body: contact,
+      }),
+      invalidatesTags: ['Contacts'],
+    }),
+    deleteContact: builder.mutation({
+      query: contactId => ({
+        url: `/contacts/${contactId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Contacts'],
+    }),
+  }),
 });
 
-const persistConfig = {
-  key: 'contacts',
-  storage,
-  whitelist: ['items'],
-};
-
-export const contactsReduser = persistReducer(
-  persistConfig,
-  contactsSlice.reducer
-);
-
-export const { addContact, deleteContact, setFilter } = contactsSlice.actions;
-
-//Selectors
-export const getVisibleContacts = state =>
-  getContacts(state).filter(
-    item =>
-      item.name.includes(getFilter(state)) ||
-      item.phone.includes(getFilter(state))
-  );
-
-export const getContacts = state => state.contacts.items;
-const getFilter = state => state.contacts.filter;
+export const {
+  useGetContactsQuery,
+  useAddContactMutation,
+  useDeleteContactMutation,
+} = contactsSlice;
